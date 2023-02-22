@@ -95,7 +95,7 @@ def add_product():
                               product_price=product_price, date_updated=date_updated)
         session.add(new_product)
         session.commit()
-        print('\nProduct added! ✅')
+        print(f'\n{product_name} added! ✅')
         time.sleep(1.5)
 
 
@@ -137,7 +137,7 @@ def update_product(id, name, quantity, price, date_updated):
     product.product_price = price
     product.date_updated = date_updated
     session.commit()
-    print('\n{name} updated! ✅')
+    print(f'\n{name} updated! ✅')
     time.sleep(1.5)
 
 
@@ -148,5 +148,5 @@ def delete_product():
         Product.product_id == id).one()
     session.delete(product)
     session.commit()
-    print('\n{product.product_name} deleted! ✅')
+    print(f'\n{product.product_name} deleted! ✅')
     time.sleep(1.5)
