@@ -1,10 +1,11 @@
+from decimal import Decimal
 import datetime
 
 
 # Format product_price for database
 def clean_price(price_str):
     try:
-        price_float = float(price_str.replace('$', ''))
+        price_float = Decimal(price_str.replace('$', ''))
     except ValueError:
         while input("""
               \n❗️***** PRICE ERROR *****❗️
