@@ -1,6 +1,6 @@
 from models import (Base, engine)
 from lib.csv_actions import add_csv, backup_db
-from lib.db_actions import add_product, view_product
+from lib.db_actions import add_product, delete_product, update_promt, view_product
 
 """
 TODO
@@ -15,15 +15,17 @@ def menu():
               \rPRODUCTS
               \r- Enter "v" to view the details of a product
               \r- Enter "a" to add a new product
+              \r- Enter "u" to update a product
+              \r- Enter "d" to delete a product
               \r- Enter "b" to backup the entire contents of the database
               \r- Enter "e" to exit''')
         choice = (input('What would you like to do?  ')).lower()
-        if choice in ['v', 'a', 'b', 'e']:
+        if choice in ['v', 'a', 'u', 'd', 'b', 'e']:
             return choice
         else:
             while input('''
                   \r❗️Please choose one of the options above.❗️
-                  \rInput "v", "a", "b", or "e"
+                  \rInput "v", "a", "u", "d", "b", or "e"
                   \rPress ENTER to try again.''') != "":
                 continue
 
@@ -39,6 +41,12 @@ def app():
         elif choice == "a":
             # Add a new product
             add_product()
+        elif choice == "u":
+            # Update a product
+            update_promt()
+        elif choice == "d":
+            # Delete a product
+            delete_product()
         elif choice == "b":
             # Backup the entire contents of the database
             backup_db()

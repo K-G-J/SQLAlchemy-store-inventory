@@ -1,4 +1,4 @@
-from models import Product, Session, session
+from models import Product, session
 from lib.clean_data import clean_date, clean_price
 import csv
 import time
@@ -18,7 +18,7 @@ def add_csv():
         data = csv.reader(csvfile)
         next(data)  # skip header row
         for row in data:
-            product_in_db = Session.query(Product).filter(
+            product_in_db = session.query(Product).filter(
                 Product.product_name == row[0]).one_or_none()
             if product_in_db == None:
                 product_name = row[0]

@@ -23,9 +23,8 @@ def prompt_ids():
         return id_options
 
 
-# Get and display a product by its product_id
-def view_product():
-    products = read_db()
+# Get selected product_id
+def get_id():
     valid_ids = prompt_ids()
     while True:
         try:
@@ -38,16 +37,23 @@ def view_product():
             prompt_ids()
             continue
         else:
-            for product in products:
-                if product['id'] == id:
-                    print(f"""
-                        \rName: {product['name']}
-                        \rPrice: ${product['price'] / 100}
-                        \rQuantity: {product['quantity']}
-                        \rDate Updated: {product['date_updated']}
-                        """)
-                    time.sleep(1.5)
-                    return
+            return id
+
+
+# Get and display a product by its product_id
+def view_product():
+    products = read_db()
+    id = get_id()
+    for product in products:
+        if product['id'] == id:
+            print(f"""
+                \rName: {product['name']}
+                \rPrice: ${product['price'] / 100}
+                \rQuantity: {product['quantity']}
+                \rDate Updated: {product['date_updated']}
+                """)
+            time.sleep(1.5)
+            return
 
 
 # Adding a product to the database
@@ -89,6 +95,15 @@ def add_product():
         time.sleep(1.5)
 
 
+# Prompt for product to update
+def update_promt():
+    id = get_id()
+    product = session.query(Product).filter(
+        Product.product_id == id).one()
+    update_product(product.product_name, product.product_quantity,
+                   product.product_price, product.date_updated)
+
+
 # Update existing product
 def update_product(name, quantity, price, date_updated):
     product = session.query(Product).filter(func.lower(
@@ -99,4 +114,15 @@ def update_product(name, quantity, price, date_updated):
     product.date_updated = date_updated
     session.commit()
     print('\nProduct updated! ✅')
+    time.sleep(1.5)
+
+
+# Delete a product
+def delete_product():
+    id = get_id()
+    product = session.query(Product).filter(
+        Product.product_id == id).one()
+    session.delete(product)
+    session.commit()
+    print('\nProduct deleted! ✅')
     time.sleep(1.5)
