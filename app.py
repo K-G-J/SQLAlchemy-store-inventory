@@ -2,6 +2,7 @@ from models import (Base, Product, session, engine)
 import datetime
 import csv
 import time
+import os.path
 
 """
 TODO
@@ -25,7 +26,7 @@ def menu():
             while input('''
                   \r❗️Please choose one of the options above.❗️
                   \rInput "v", "a", "b", or "e"
-                  \rPress enter to try again.''') != "":
+                  \rPress ENTER to try again.''') != "":
                 continue
 
 
@@ -38,7 +39,7 @@ def clean_price(price_str):
               \n❗️***** PRICE ERROR *****❗️
               \rThe price should be a number without a currency symbol.
               \rEx: 10.99
-              \rPress enter to try again.
+              \rPress ENTER to try again.
               \r*************************""") != "":
             continue
     else:
@@ -56,7 +57,7 @@ def clean_date(date_str):
               \n❗️***** DATE ERROR *****❗️
               \rThe date format should include a valid Month, Day, and Year from the past.
               \rEx: 1/13/2022
-              \rPress enter to try again.
+              \rPress ENTER to try again.
               \r*************************""") != "":
             continue
         return
@@ -72,7 +73,7 @@ def clean_quantity(quantity_str):
         while input("""
               \n❗️***** QUANTITY ERROR *****❗️
               \rThe product quantity should be a valid number.
-              \rPress enter to try again.
+              \rPress ENTER to try again.
               \r*************************""") != "":
             continue
         return
@@ -189,6 +190,31 @@ def add_product():
     time.sleep(1.5)
 
 
+# Backup the database (Export new CSV)
+def backup_db():
+    products = read_db()
+    if not os.path.exists('backup.csv'):
+        writer = csv.writer(open('backup.csv', 'w'))
+        writer.writerow(['product_name', 'product_price',
+                        'product_quantity', 'date_updated'])
+        for product in products:
+            writer.writerow([product['name'], product['price'],
+                            product['quantity'], product['date_updated']])
+        print("\nDatabase backedup! ✅")
+        time.sleep(1.5)
+    else:
+        with open('backup.csv') as csvfile:
+            data = csv.reader(csvfile)
+            writer = csv.writer(open('backup.csv', 'w'))
+            for row in data:
+                for product in products:
+                    if not product['name'] == row[0]:
+                        writer.writerow(
+                            [product['name'], product['price'], product['quantity'], product['date_updated']])
+        print("\nDatabase backedup! ✅")
+        time.sleep(1.5)
+
+
 def app():
     add_csv()
     app_running = True
@@ -202,7 +228,7 @@ def app():
             add_product()
         elif choice == "b":
             # Backup the entire contents of the database
-            pass
+            backup_db()
         else:
             print("\nThank you for using the store inventory database.\nGoodbye 👋\n")
             app_running = False
