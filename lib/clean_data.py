@@ -24,6 +24,9 @@ def clean_date(date_str):
         split_date = date_str.split('/')
         return_date = datetime.date(
             int(split_date[2]), int(split_date[0]), int(split_date[1]))
+        # TODO: fix this check
+        if return_date > datetime.datetime.now():
+            print('\nPlease enter a date from the past')
     except (ValueError, IndexError):
         while input("""
               \n❗️***** DATE ERROR *****❗️

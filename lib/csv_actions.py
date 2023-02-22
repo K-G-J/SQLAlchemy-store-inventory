@@ -2,14 +2,6 @@ from models import Product, session
 from lib.clean_data import clean_date, clean_price
 import csv
 import time
-import os.path
-
-
-"""
-TODO
-Menu option: b
-When selecting option b, the backup CSV output file should contain a single header row with all the appropriate field titles. This backup.csv should be formatted exactly the same way as inventory.csv, so much so that it can replace inventory.csv and the app will still import data correctly.
-"""
 
 
 # Add products in inventory.csv

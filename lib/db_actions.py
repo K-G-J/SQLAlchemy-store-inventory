@@ -49,7 +49,7 @@ def view_product():
         if product['id'] == id:
             print(f"""
                 \rName: {product['name']}
-                \rPrice: ${product['price'] / 100}
+                \rPrice: ${product['price'] / 100:.2f}
                 \rQuantity: {product['quantity']}
                 \rDate Updated: {product['date_updated']}
                 """)
@@ -137,7 +137,7 @@ def update_product(id, name, quantity, price, date_updated):
     product.product_price = price
     product.date_updated = date_updated
     session.commit()
-    print('\nProduct updated! ✅')
+    print('\n{name} updated! ✅')
     time.sleep(1.5)
 
 
@@ -148,5 +148,5 @@ def delete_product():
         Product.product_id == id).one()
     session.delete(product)
     session.commit()
-    print('\nProduct deleted! ✅')
+    print('\n{product.product_name} deleted! ✅')
     time.sleep(1.5)
