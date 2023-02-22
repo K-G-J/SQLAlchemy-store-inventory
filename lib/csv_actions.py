@@ -63,6 +63,7 @@ def backup_db():
         with open('backup.csv') as csvfile:
             csv_data = csvfile.read()
             not_in_file = []
+            # NOTE: THIS METHOD WILL NOT REMOVE DELETED PRODUCTS OR REPLACE UPDATED ONES
             for product in products:
                 if product['name'].lower() not in csv_data.lower():
                     not_in_file.append(product)
