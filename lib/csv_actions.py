@@ -48,30 +48,13 @@ def read_db():
 # Backup the database (Export new CSV)
 def backup_db():
     products = read_db()
-    if not os.path.exists('backup.csv'):
-        writer = csv.writer(open('backup.csv', 'w'))
-        writer.writerow(['product_name', 'product_price',
-                        'product_quantity', 'date_updated'])
-        for product in products:
-            formatted_price = f"${product['price'] / 100:.2f}"
-            formatted_date = f"{product['date_updated'].month}/{product['date_updated'].day}/{product['date_updated'].year}"
-            writer.writerow([product['name'], formatted_price,
-                            str(product['quantity']), formatted_date])
-        print("\nDatabase backedup! ✅")
-        time.sleep(1.5)
-    else:
-        with open('backup.csv') as csvfile:
-            csv_data = csvfile.read()
-            not_in_file = []
-            # NOTE: THIS METHOD WILL NOT REMOVE DELETED PRODUCTS OR REPLACE UPDATED ONES
-            for product in products:
-                if product['name'].lower() not in csv_data.lower():
-                    not_in_file.append(product)
-            for item in not_in_file:
-                writer = csv.writer(open('backup.csv', 'a'))
-                formatted_price = f"${item['price'] / 100:.2f}"
-                formatted_date = f"{item['date_updated'].month}/{item['date_updated'].day}/{item['date_updated'].year}"
-                writer.writerow([item['name'], formatted_price,
-                                 str(item['quantity']), formatted_date])
-        print("\nDatabase backedup! ✅")
-        time.sleep(1.5)
+    writer = csv.writer(open('backup.csv', 'w'))
+    writer.writerow(['product_name', 'product_price',
+                    'product_quantity', 'date_updated'])
+    for product in products:
+        formatted_price = f"${product['price'] / 100:.2f}"
+        formatted_date = f"{product['date_updated'].month}/{product['date_updated'].day}/{product['date_updated'].year}"
+        writer.writerow([product['name'], formatted_price,
+                        str(product['quantity']), formatted_date])
+    print("\nDatabase backedup! ✅")
+    time.sleep(1.5)
