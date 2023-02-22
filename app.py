@@ -3,12 +3,8 @@ import datetime
 import csv
 import time
 
-"""
-"""
 
 # Main menu options
-
-
 def menu():
     while True:
         print('''
@@ -94,14 +90,51 @@ def read_db():
     return products
 
 
+# Display products with their IDs
+def prompt_ids():
+    products = read_db()
+    id_options = []
+    for product in products:
+        id_options.append(product['id'])
+    while (see_ids := (input("\nWould you like to see all product IDs? (y/n)  ")).lower()) != "n":
+        if see_ids == "y":
+            for product in products:
+                print(f"\n{product['id']}: {product['name']}")
+            return id_options
+        else:
+            print('\nPlease enter either "y" or "n"')
+    else:
+        return id_options
+
+
 # Get and display a product by its product_id
-def get_product():
-    while (see_ids := (input("Would you like to see all product IDs? (y/n)  "))).lower() != "n":
+def view_product():
+    products = read_db()
+    valid_ids = prompt_ids()
+    while True:
+        try:
+            id = int(input("\nPlease enter a product ID:  "))
+            if id not in valid_ids:
+                print(f'\n{id} is not a valid product ID')
+                prompt_ids()
+        except ValueError as err:
+            print(f'\nThat is not a valid ID\n({err})')
+            prompt_ids()
+            continue
+        else:
+            for product in products:
+                if product['id'] == id:
+                    print(f"""
+                        \rName: {product['name']}
+                        \rPrice: ${product['price'] / 100}
+                        \rQuantity: {product['quantity']}
+                        \rDate Updated: {product['date_updated']}
+                        """)
+                    return
 
 
 def app():
     add_csv()
-    products = read_db()
     app_running = True
     while app_running:
         choice = menu()
@@ -123,4 +156,5 @@ def app():
 if __name__ == '__main__':
     # Connect to the database
     Base.metadata.create_all(engine)
-    app()
+    # app()
+    view_product()
