@@ -65,6 +65,9 @@ def add_product():
     for product in products:
         if product['name'].lower() == product_name.lower():
             print(f'\n{product_name} already exists and will be updated')
+            product = session.query(Product).filter(func.lower(
+                Product.product_name).contains(func.lower(product_name))).first()
+            product_id = product.product_id
             existing_product = True
     quantity_error = True
     while quantity_error:
@@ -85,7 +88,7 @@ def add_product():
         if type(date_updated) == datetime.date:
             date_error = False
     if existing_product:
-        update_product(product_name, product_quantity,
+        update_product(product_id, product_name, product_quantity,
                        product_price, date_updated)
     else:
         new_product = Product(product_name=product_name, product_quantity=product_quantity,
@@ -121,14 +124,14 @@ def update_promt():
         date_updated = clean_date(date_updated)
         if type(date_updated) == datetime.date:
             date_error = False
-    update_product(product_name, product_quantity,
+    update_product(id, product_name, product_quantity,
                    product_price, date_updated)
 
 
 # Update existing product
-def update_product(name, quantity, price, date_updated):
-    product = session.query(Product).filter(func.lower(
-        Product.product_name).contains(func.lower(name))).first()
+def update_product(id, name, quantity, price, date_updated):
+    product = session.query(Product).filter(
+        Product.product_id == id).one()
     product.product_name = name
     product.product_quantity = quantity
     product.product_price = price
