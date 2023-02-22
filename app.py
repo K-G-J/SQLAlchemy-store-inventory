@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from models import (Base, Product, session, engine)
 import datetime
 import csv
@@ -79,6 +80,13 @@ def clean_quantity(quantity_str):
         return
     else:
         return product_quantity
+    
+
+"""
+TODO
+Menu option: b
+When selecting option b, the backup CSV output file should contain a single header row with all the appropriate field titles. This backup.csv should be formatted exactly the same way as inventory.csv, so much so that it can replace inventory.csv and the app will still import data correctly.
+"""
 
 
 # Add products in inventory.csv
@@ -187,9 +195,13 @@ def view_product():
 
 # Adding a product to the database
 def add_product():
-    pass
-    # Add book
+    existing_product = False
+    products = read_db()
     product_name = input('\nProduct Name:  ')
+    for product in products:
+        if product['name'].lower() == product_name.lower():
+            print(f'\n{product_name} already exists and will be updated')
+            existing_product = True
     quantity_error = True
     while quantity_error:
         product_quantity = input('\nProduct Quantity:  ')
@@ -208,14 +220,28 @@ def add_product():
         date_updated = clean_date(date_updated)
         if type(date_updated) == datetime.date:
             date_error = False
+    if existing_product:
+        update_product(product_name, product_quantity,
+                       product_price, date_updated)
+    else:
+        new_product = Product(product_name=product_name, product_quantity=product_quantity,
+                              product_price=product_price, date_updated=date_updated)
+        session.add(new_product)
+        session.commit()
+        print('\nProduct added! ✅')
+        time.sleep(1.5)
 
-    new_product = Product(product_name=product_name, product_quantity=product_quantity,
-                          product_price=product_price, date_updated=date_updated)
-    session.add(new_product)
+
+# Update existing product
+def update_product(name, quantity, price, date_updated):
+    product = session.query(Product).filter(func.lower(
+        Product.product_name).contains(func.lower(name))).first()
+    product.product_name = name
+    product.product_quantity = quantity
+    product.product_price = price
+    product.date_updated = date_updated
     session.commit()
-    print('\nProduct added! ✅')
-    time.sleep(1.5)
-
+    
 
 def app():
     add_csv()
