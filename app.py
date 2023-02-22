@@ -114,6 +114,33 @@ def read_db():
     return products
 
 
+# Backup the database (Export new CSV)
+def backup_db():
+    products = read_db()
+    if not os.path.exists('backup.csv'):
+        writer = csv.writer(open('backup.csv', 'w'))
+        writer.writerow(['product_name', 'product_price',
+                        'product_quantity', 'date_updated'])
+        for product in products:
+            writer.writerow([product['name'], product['price'],
+                            product['quantity'], product['date_updated']])
+        print("\nDatabase backedup! ✅")
+        time.sleep(1.5)
+    else:
+        with open('backup.csv') as csvfile:
+            csv_data = csvfile.read()
+            not_in_file = []
+            for product in products:
+                if product['name'] not in csv_data:
+                    not_in_file.append(product)
+            for item in not_in_file:
+                writer = csv.writer(open('backup.csv', 'a'))
+                writer.writerow([item['name'], item['price'],
+                                 item['quantity'], item['date_updated']])
+        print("\nDatabase backedup! ✅")
+        time.sleep(1.5)
+
+
 # Display products with their IDs
 def prompt_ids():
     products = read_db()
@@ -188,31 +215,6 @@ def add_product():
     session.commit()
     print('\nProduct added! ✅')
     time.sleep(1.5)
-
-
-# Backup the database (Export new CSV)
-def backup_db():
-    products = read_db()
-    if not os.path.exists('backup.csv'):
-        writer = csv.writer(open('backup.csv', 'w'))
-        writer.writerow(['product_name', 'product_price',
-                        'product_quantity', 'date_updated'])
-        for product in products:
-            writer.writerow([product['name'], product['price'],
-                            product['quantity'], product['date_updated']])
-        print("\nDatabase backedup! ✅")
-        time.sleep(1.5)
-    else:
-        with open('backup.csv') as csvfile:
-            data = csv.reader(csvfile)
-            writer = csv.writer(open('backup.csv', 'w'))
-            for row in data:
-                for product in products:
-                    if not product['name'] == row[0]:
-                        writer.writerow(
-                            [product['name'], product['price'], product['quantity'], product['date_updated']])
-        print("\nDatabase backedup! ✅")
-        time.sleep(1.5)
 
 
 def app():
