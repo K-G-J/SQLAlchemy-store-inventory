@@ -53,8 +53,10 @@ def backup_db():
         writer.writerow(['product_name', 'product_price',
                         'product_quantity', 'date_updated'])
         for product in products:
-            writer.writerow([product['name'], product['price'],
-                            product['quantity'], product['date_updated']])
+            formatted_price = f"${product['price'] / 100:.2f}"
+            formatted_date = f"{product['date_updated'].month}/{product['date_updated'].day}/{product['date_updated'].year}"
+            writer.writerow([product['name'], formatted_price,
+                            str(product['quantity']), formatted_date])
         print("\nDatabase backedup! ✅")
         time.sleep(1.5)
     else:
@@ -62,11 +64,13 @@ def backup_db():
             csv_data = csvfile.read()
             not_in_file = []
             for product in products:
-                if product['name'] not in csv_data:
+                if product['name'].lower() not in csv_data.lower():
                     not_in_file.append(product)
             for item in not_in_file:
                 writer = csv.writer(open('backup.csv', 'a'))
-                writer.writerow([item['name'], item['price'],
-                                 item['quantity'], item['date_updated']])
+                formatted_price = f"${item['price'] / 100:.2f}"
+                formatted_date = f"{item['date_updated'].month}/{item['date_updated'].day}/{item['date_updated'].year}"
+                writer.writerow([item['name'], formatted_price,
+                                 str(item['quantity']), formatted_date])
         print("\nDatabase backedup! ✅")
         time.sleep(1.5)
