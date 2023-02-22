@@ -24,10 +24,9 @@ def clean_date(date_str):
         split_date = date_str.split('/')
         return_date = datetime.date(
             int(split_date[2]), int(split_date[0]), int(split_date[1]))
-        # TODO: fix this check
-        # datetime.datetime.combine(my_date, datetime.time.min)
         if datetime.datetime.combine(return_date, datetime.time.min) > datetime.datetime.now():
-            print('\nPlease enter a date from the past')
+            print('\n❗️ Please enter a date from the past')
+            return
     except (ValueError, IndexError):
         while input("""
               \n❗️***** DATE ERROR *****❗️
