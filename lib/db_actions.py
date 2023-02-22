@@ -32,6 +32,7 @@ def get_id():
             if id not in valid_ids:
                 print(f'\n❗️ {id} is not a valid product ID')
                 prompt_ids()
+                continue
         except ValueError as err:
             print(f'\n❗️ That is not a valid ID\n({err})')
             prompt_ids()
@@ -100,8 +101,28 @@ def update_promt():
     id = get_id()
     product = session.query(Product).filter(
         Product.product_id == id).one()
-    update_product(product.product_name, product.product_quantity,
-                   product.product_price, product.date_updated)
+    print(f'\nUpdating {product.product_name}')
+    product_name = input('\nProduct Name:  ')
+    quantity_error = True
+    while quantity_error:
+        product_quantity = input('\nProduct Quantity:  ')
+        product_quantity = clean_quantity(product_quantity)
+        if type(product_quantity) == int:
+            quantity_error = False
+    price_error = True
+    while price_error:
+        product_price = input('\nPrice (Ex: 25.64):  ')
+        product_price = clean_price(product_price)
+        if type(product_price) == int:
+            price_error = False
+    date_error = True
+    while date_error:
+        date_updated = input('\nDate Updated (Ex: 10/25/2022):  ')
+        date_updated = clean_date(date_updated)
+        if type(date_updated) == datetime.date:
+            date_error = False
+    update_product(product_name, product_quantity,
+                   product_price, date_updated)
 
 
 # Update existing product
