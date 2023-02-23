@@ -6,21 +6,28 @@ import time
 
 # Add products in inventory.csv
 def add_csv():
-    with open('inventory.csv') as csvfile:
+    with open('backup.csv') as csvfile:
         data = csv.reader(csvfile)
         next(data)  # skip header row
         for row in data:
-            product_in_db = session.query(Product).filter(
-                Product.product_name == row[0]).one_or_none()
-            if product_in_db == None:
-                product_name = row[0]
-                product_price = clean_price(row[1])
-                product_quantity = int(row[2])
-                date_updated = clean_date(row[3])
+            product_name = row[0]
+            product_price = clean_price(row[1])
+            product_quantity = int(row[2])
+            date_updated = clean_date(row[3])
+            duplicates = session.query(Product).filter(
+                Product.product_name == product_name).all()
+            if duplicates:
+                for item in duplicates:
+                    if date_updated > item.date_updated:
+                        item.product_name = product_name
+                        item.product_price = product_price
+                        item.product_quantity = product_quantity
+                        item.date_updated = date_updated
+            else:
                 new_product = Product(product_name=product_name, product_quantity=product_quantity,
                                       product_price=product_price, date_updated=date_updated)
                 session.add(new_product)
-        session.commit()
+            session.commit()
 
 
 # Read products from the db
