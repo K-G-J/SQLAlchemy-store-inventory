@@ -6,7 +6,7 @@ import time
 
 # Add products in inventory.csv
 def add_csv():
-    with open('backup.csv') as csvfile:
+    with open('inventory.csv') as csvfile:
         data = csv.reader(csvfile)
         next(data)  # skip header row
         for row in data:
